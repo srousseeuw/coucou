@@ -17,9 +17,9 @@
 
 // The domain where index.html is hosted (for CORS + redirect URLs).
 // Use "*" only while testing locally.
-const ALLOWED_ORIGIN = "https://your-site.example";        // <-- change me
-const SUCCESS_URL     = "https://your-site.example/bedankt.html"; // <-- change me
-const CANCEL_URL      = "https://your-site.example/index.html";   // <-- change me
+const ALLOWED_ORIGIN = "https://coucou.ocior.be/";        // <-- change me
+const SUCCESS_URL     = "https://coucou.ocior.be/bedankt.html"; // <-- change me
+const CANCEL_URL      = "https://coucou.ocior.be/index.html";   // <-- change me
 
 // Price in cents, incl. VAT. €40.00 = 4000.
 const PRICE_CENTS = 4000;
