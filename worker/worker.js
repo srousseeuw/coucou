@@ -17,7 +17,7 @@
 
 // The domain where index.html is hosted (for CORS + redirect URLs).
 // Use "*" only while testing locally.
-const ALLOWED_ORIGIN = "https://coucou.ocior.be/";        // <-- change me
+const ALLOWED_ORIGIN = "https://coucou.ocior.be";        // <-- change me
 const SUCCESS_URL     = "https://coucou.ocior.be/bedankt.html"; // <-- change me
 const CANCEL_URL      = "https://coucou.ocior.be/index.html";   // <-- change me
 
