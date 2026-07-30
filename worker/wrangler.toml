@@ -1,8 +1,0 @@
-name = "coucou-checkout"
-main = "worker.js"
-compatibility_date = "2024-01-01"
-
-# De Stripe-sleutel staat NIET hier. Je voegt hem apart toe als versleutelde
-# secret, via de terminal:
-#     wrangler secret put STRIPE_SECRET_KEY
-# of via het Cloudflare-dashboard: Worker → Settings → Variables and Secrets.
