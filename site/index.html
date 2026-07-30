@@ -49,8 +49,10 @@
   .float{position:absolute;background:var(--card);padding:10px 15px;border-radius:14px;box-shadow:0 12px 24px rgba(28,27,58,.16);font-weight:700;font-family:'Fredoka',sans-serif;display:flex;align-items:center;gap:8px;font-size:.9rem;pointer-events:none}
   .float.uv{top:14px;left:14px;color:var(--blue)}
   .float.made{bottom:14px;right:14px;color:var(--magenta)}
-  .thumbs{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:14px}
-  .thumb{background:#fff;border:2px solid var(--line);border-radius:14px;padding:0;overflow:hidden;cursor:pointer;aspect-ratio:1/.78;-webkit-tap-highlight-color:transparent;transition:border-color .15s}
+  .thumbs{display:flex;gap:12px;margin-top:14px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:thin;padding-bottom:4px}
+  .thumbs::-webkit-scrollbar{height:6px}
+  .thumbs::-webkit-scrollbar-thumb{background:var(--line);border-radius:999px}
+  .thumb{flex:0 0 calc(25% - 9px);scroll-snap-align:start;background:#fff;border:2px solid var(--line);border-radius:14px;padding:0;overflow:hidden;cursor:pointer;aspect-ratio:1/.78;-webkit-tap-highlight-color:transparent;transition:border-color .15s}
   .thumb img{width:100%;height:100%;object-fit:contain;padding:6px}
   .thumb.active{border-color:var(--navy)}
   .thumb:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
@@ -117,6 +119,7 @@
     .brand .logo-word{height:32px}
     .nav-note span.txt{display:none}
     .thumbs{gap:8px}
+    .thumb{flex:0 0 30%}
   }
 </style>
 </head>
@@ -298,7 +301,7 @@
   <div class="wrap">
     <div>
       <div class="foot-brand">coucou</div>
-      <p>Speelse, veilige zonnebrillen voor kinderen. Ontworpen in de Lage Landen, gedragen op elke speelplaats.</p>
+      <p>Speelse, veilige zonnebrillen voor kinderen. Ontworpen in België, gedragen op elke speelplaats.</p>
     </div>
     <div class="cols">
       <div>
@@ -341,16 +344,47 @@
   qtyPlus.addEventListener('click',  function(){ if(qty<MAX_QTY){ qty++; renderQty(); } });
   renderQty();
 
-  // ---- Fotogalerij: thumbnail wisselt de hoofdfoto ----
+  // ---- Fotogalerij: tik of veeg om door de foto's te bladeren ----
   var mainImg = document.getElementById('mainImg');
-  var thumbs = document.querySelectorAll('.thumb');
-  thumbs.forEach(function(t){
-    t.addEventListener('click', function(){
-      mainImg.src = t.getAttribute('data-full');
-      thumbs.forEach(function(x){ x.classList.remove('active'); });
-      t.classList.add('active');
-    });
+  var thumbsWrap = document.querySelector('.thumbs');
+  var thumbs = Array.prototype.slice.call(document.querySelectorAll('.thumb'));
+  var current = 0;
+
+  function showPhoto(i){
+    if(i < 0) i = thumbs.length - 1;
+    if(i >= thumbs.length) i = 0;
+    current = i;
+    var t = thumbs[i];
+    mainImg.src = t.getAttribute('data-full');
+    thumbs.forEach(function(x){ x.classList.remove('active'); });
+    t.classList.add('active');
+    // schuif de actieve thumbnail in beeld
+    if(t.scrollIntoView){
+      t.scrollIntoView({behavior:'smooth', inline:'center', block:'nearest'});
+    }
+  }
+
+  thumbs.forEach(function(t, i){
+    t.addEventListener('click', function(){ showPhoto(i); });
   });
+
+  // Veeg links/rechts op de hoofdfoto om te wisselen
+  var mainWrap = document.querySelector('.gallery .main');
+  var startX = null, startY = null;
+  mainWrap.addEventListener('touchstart', function(e){
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+  }, {passive:true});
+  mainWrap.addEventListener('touchend', function(e){
+    if(startX === null) return;
+    var dx = e.changedTouches[0].clientX - startX;
+    var dy = e.changedTouches[0].clientY - startY;
+    // alleen als het duidelijk een horizontale veeg is
+    if(Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)){
+      showPhoto(dx < 0 ? current + 1 : current - 1);
+    }
+    startX = null; startY = null;
+  }, {passive:true});
 
   // ====================================================================
   // Backend endpoint dat de Stripe Checkout-sessie aanmaakt.
