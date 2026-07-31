@@ -230,7 +230,7 @@
 
       <div class="ship-note">
         <span class="flag">&#127463;&#127466;</span>
-        <div><strong>Verzending enkel in België.</strong> We verzenden momenteel uitsluitend naar een Belgisch adres. Verzendkosten worden bij het afrekenen toegevoegd. Liever geen verzendkosten? Afhalen kan ook, op ons adres in Melsele (Beveren).</div>
+        <div><strong>Verzending enkel in België.</strong> We verzenden momenteel uitsluitend naar een Belgisch adres, voor € 5,95 en levering binnen 3 werkdagen. Liever geen verzendkosten? Afhalen kan ook, op ons adres in Melsele (Beveren).</div>
       </div>
 
       <a href="#checkout" class="btn btn-primary" style="width:100%">Bestel nu — € 40</a>
@@ -298,7 +298,7 @@
 
       <div class="summary">
         <div class="line"><span id="lineLabel">Coucou-zonnebril (1 stuk)</span><span id="lineTotal">&euro; 40,00</span></div>
-        <div class="line"><span>Verzending (België)</span><span>berekend bij Stripe</span></div>
+        <div class="line"><span>Verzending (België, binnen 3 werkdagen)</span><span>&euro; 5,95</span></div>
         <div class="total"><span>Te betalen</span><span id="grandTotal">vanaf &euro; 40,00</span></div>
       </div>
 
@@ -333,6 +333,7 @@
 <script>
   // ---- Aantal-kiezer (1 t/m 10) ----
   var PRICE = 40; // euro per bril
+  var SHIPPING = 5.95; // vaste verzendkost binnen België
   var MAX_QTY = 10, MIN_QTY = 1;
   var qty = 1;
   var qtyValue = document.getElementById('qtyValue');
@@ -351,7 +352,7 @@
     var word = qty === 1 ? 'stuk' : 'stuks';
     lineLabel.textContent = 'Coucou-zonnebril (' + qty + ' ' + word + ')';
     lineTotal.textContent = euro(PRICE * qty);
-    grandTotal.textContent = 'vanaf ' + euro(PRICE * qty);
+    grandTotal.textContent = euro(PRICE * qty + SHIPPING);
   }
   qtyMinus.addEventListener('click', function(){ if(qty>MIN_QTY){ qty--; renderQty(); } });
   qtyPlus.addEventListener('click',  function(){ if(qty<MAX_QTY){ qty++; renderQty(); } });
