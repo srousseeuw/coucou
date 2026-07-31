@@ -2,8 +2,9 @@
 // Coucou — Stripe Checkout backend (Cloudflare Worker)
 // -----------------------------------------------------------------------------
 // This creates a Stripe Checkout Session for one €40 sunglass, restricts
-// shipping to Belgium, and adds shipping-cost options. The customer is then
-// redirected to Stripe's secure hosted payment page.
+// shipping to Belgium, and adds a flat €5,95 shipping fee (levering binnen
+// 3 werkdagen). The customer is then redirected to Stripe's secure hosted
+// payment page.
 //
 // Your Stripe SECRET key lives here as an encrypted secret — never in the HTML.
 //
@@ -24,10 +25,9 @@ const CANCEL_URL      = "https://coucou.ocior.be/index.html";   // <-- change me
 // Price in cents, incl. VAT. €40.00 = 4000.
 const PRICE_CENTS = 4000;
 
-// Shipping options shown at checkout (name + cost in cents). Adjust to taste.
+// Shipping options shown at checkout (name + cost in cents). Enkel België, één vaste tarief.
 const SHIPPING_OPTIONS = [
-  { label: "Standaard verzending (2–4 werkdagen)", amountCents: 495 },
-  { label: "Verzending morgen (bestel voor 15u)",  amountCents: 895 },
+  { label: "Verzending binnen België (levering binnen 3 werkdagen)", amountCents: 595 },
 ];
 
 export default {
@@ -92,6 +92,10 @@ export default {
       params.append(`shipping_options[${i}][shipping_rate_data][display_name]`, opt.label);
       params.append(`shipping_options[${i}][shipping_rate_data][fixed_amount][amount]`, String(opt.amountCents));
       params.append(`shipping_options[${i}][shipping_rate_data][fixed_amount][currency]`, "eur");
+      params.append(`shipping_options[${i}][shipping_rate_data][delivery_estimate][minimum][unit]`, "business_day");
+      params.append(`shipping_options[${i}][shipping_rate_data][delivery_estimate][minimum][value]`, "1");
+      params.append(`shipping_options[${i}][shipping_rate_data][delivery_estimate][maximum][unit]`, "business_day");
+      params.append(`shipping_options[${i}][shipping_rate_data][delivery_estimate][maximum][value]`, "3");
     });
 
     // Keep the customer's typed address on the order for your records.
